@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import logging
+logger = logging.getLogger(__name__)
 import sys
 
 from django.conf import settings
@@ -49,6 +50,7 @@ def render_field(
     :template_pack: Name of the template pack to be used for rendering `field`
     :extra_context: Dictionary to be added to context, added variables by the layout object
     """
+    logger.debug('render_field(field=%(field)r, form=%(form)s, attrs=%(attrs)r)', {'field': field, 'form': type(form).__name__, 'attrs': attrs})
     added_keys = [] if extra_context is None else extra_context.keys()
     with KeepContext(context, added_keys):
         if field is None:
@@ -79,6 +81,7 @@ def render_field(
             # Injecting HTML attributes into field's widget, Django handles rendering these
             bound_field = form[field]
             field_instance = bound_field.field
+
             if attrs is not None:
                 widgets = getattr(field_instance.widget, 'widgets', [field_instance.widget])
 
@@ -166,6 +169,7 @@ def render_crispy_form(form, helper=None, context=None):
     This function wraps the template logic in a function easy to use in a Django view.
     """
     from crispy_forms.templatetags.crispy_forms_tags import CrispyFormNode
+    logger.debug('render_crispy_form(form=%(form)s)', {'form': type(form).__name__})
 
     if helper is not None:
         node = CrispyFormNode('form', 'helper')

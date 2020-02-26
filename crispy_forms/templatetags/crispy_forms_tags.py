@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import logging
+logger = logging.getLogger(__name__)
+
 from django import template
 from django.conf import settings
 from django.forms.formsets import BaseFormSet
@@ -200,8 +203,10 @@ class CrispyFormNode(BasicNode):
         c = self.get_render(context).flatten()
 
         if self.actual_helper is not None and getattr(self.actual_helper, 'template', False):
+            logger.debug('%(self)s.render() template_path=%(template_path)r', {'self': type(self).__name__, 'template_path': self.actual_helper.template})
             template = get_template(self.actual_helper.template)
         else:
+            logger.debug('%(self)s.render() template_pack=%(template_pack)r', {'self': type(self).__name__, 'template_path': self.template_pack})
             if c['is_formset']:
                 template = whole_uni_formset_template(self.template_pack)
             else:

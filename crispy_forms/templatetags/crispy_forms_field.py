@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 try:
     from itertools import izip
 except ImportError:
@@ -157,6 +160,9 @@ class CrispyFieldNode(template.Node):
                     widget.attrs[attribute_name] += " " + template.Variable(attribute).resolve(context)
                 else:
                     widget.attrs[attribute_name] = template.Variable(attribute).resolve(context)
+
+            logger.debug('%(self)s.render(field=%(field)r, attrs=%(attrs)r) widget=%(widget)s attrs=%(widget_attrs)r', {'self': type(self).__name__, 'field': field, 'attrs': attrs, 'widget': type(widget).__name__, 'widget_attrs': widget.attrs})
+
 
         return str(field)
 

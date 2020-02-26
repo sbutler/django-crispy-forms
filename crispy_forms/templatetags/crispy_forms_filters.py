@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import logging
+logger = logging.getLogger(__name__)
+
 from django import template
 from django.conf import settings
 from django.forms import forms
@@ -44,6 +47,7 @@ def as_crispy_form(form, template_pack=TEMPLATE_PACK, label_class="", field_clas
 
         {{ myform|label_class:"col-lg-2",field_class:"col-lg-8" }}
     """
+    logger.debug('as_crispy_form(form=%(form)s)', {'form': type(form).__name__})
     c = Context({
         'field_class': field_class,
         'field_template': '%s/field.html' % template_pack,
@@ -73,6 +77,7 @@ def as_crispy_errors(form, template_pack=TEMPLATE_PACK):
 
         {{ form|as_crispy_errors:"bootstrap" }}
     """
+    logger.debug('as_crispy_errors(form=%(form)s)', {'form': type(form).__name__})
     if isinstance(form, BaseFormSet):
         template = get_template('%s/errors_formset.html' % template_pack)
         c = Context({'formset': form}).flatten()
@@ -113,6 +118,8 @@ def as_crispy_field(field, template_pack=TEMPLATE_PACK, label_class="", field_cl
         template_path = helper.field_template
     if not template_path:
         template_path = '%s/field.html' % template_pack
+
+    logger.debug('as_crispy_field(field=%(field)r) template_path=%(template_path)r', {'field': field, 'template_path': template_path})
     template = get_template(template_path)
 
     c = Context(attributes).flatten()
