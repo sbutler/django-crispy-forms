@@ -143,9 +143,8 @@ class CrispyFieldNode(template.Node):
 
             if (
                 template_pack == 'bootstrap3'
-                and not is_checkbox(field)
-                and not is_file(field)
-                and not is_multivalue(field)
+                and not is_checkbox(widget)
+                and not is_file(widget)
             ):
                 css_class += ' form-control'
                 if field.errors:
@@ -153,9 +152,8 @@ class CrispyFieldNode(template.Node):
 
             if (
                 template_pack == 'bootstrap4'
-                and not is_multivalue(field)
             ):
-                if not is_checkbox(field):
+                if not (is_checkbox(widget) or is_checkboxselectmultiple(widget)):
                     css_class += ' form-control'
                 if field.errors:
                     css_class += ' is-invalid'
