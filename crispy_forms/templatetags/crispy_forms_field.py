@@ -14,61 +14,75 @@ from crispy_forms.utils import TEMPLATE_PACK, get_template_pack
 
 register = template.Library()
 
+def _get_widget(value):
+    """
+    Gets the widget from either a BoundField, Field, or return the value if
+    it looks enough like a widget itself.
+    """
+    if isinstance(value, forms.Widget):
+        return value
+    elif isinstance(value, forms.Field):
+        return value.widget
+    elif isinstance(value, forms.BoundField):
+        return value.field.widget
 
-@register.filter
-def is_checkbox(field):
-    return isinstance(field.field.widget, forms.CheckboxInput)
-
-
-@register.filter
-def is_password(field):
-    return isinstance(field.field.widget, forms.PasswordInput)
-
-
-@register.filter
-def is_radioselect(field):
-    return isinstance(field.field.widget, forms.RadioSelect)
-
-
-@register.filter
-def is_select(field):
-    return isinstance(field.field.widget, forms.Select)
+    return value
 
 
 @register.filter
-def is_checkboxselectmultiple(field):
-    return isinstance(field.field.widget, forms.CheckboxSelectMultiple)
+def is_checkbox(value):
+    return isinstance(_get_widget(value), forms.CheckboxInput)
 
 
 @register.filter
-def is_file(field):
-    return isinstance(field.field.widget, forms.FileInput)
+def is_password(value):
+    return isinstance(_get_widget(value), forms.PasswordInput)
 
 
 @register.filter
-def is_clearable_file(field):
-    return isinstance(field.field.widget, forms.ClearableFileInput)
+def is_radioselect(value):
+    return isinstance(_get_widget(value), forms.RadioSelect)
 
 
 @register.filter
-def is_multivalue(field):
-    return isinstance(field.field.widget, forms.MultiWidget)
+def is_select(value):
+    return isinstance(_get_widget(value), forms.Select)
 
 
 @register.filter
-def classes(field):
+def is_checkboxselectmultiple(value):
+    return isinstance(_get_widget(value), forms.CheckboxSelectMultiple)
+
+
+@register.filter
+def is_file(value):
+    return isinstance(_get_widget(value), forms.FileInput)
+
+
+@register.filter
+def is_clearable_file(value):
+    return isinstance(_get_widget(value), forms.ClearableFileInput)
+
+
+@register.filter
+def is_multivalue(value):
+    return isinstance(_get_widget(value), forms.MultiWidget)
+
+
+@register.filter
+def classes(value):
     """
     Returns CSS classes of a field
     """
-    return field.widget.attrs.get('class', None)
+    return _get_widget(value).attrs.get('class', None)
 
 
 @register.filter
-def css_class(field):
+def css_class(value):
     """
     Returns widgets class name in lowercase
     """
-    return field.field.widget.__class__.__name__.lower()
+    return _get_widget(value).__class__.__name__.lower()
 
 
 def pairwise(iterable):
